@@ -19,7 +19,9 @@
                 <label for="photo">Приложите фотографию</label>
                 <input type="file" class="form-control-file" id="photo" name="file">
             </div>
-            <img src={{filename}}>
+            {% if k == "True" %}
+                <img src={{filename}}>
+            {% endif %}
             <button type="submit" class="btn btn-primary">Записаться</button>
         </form>
     </div>

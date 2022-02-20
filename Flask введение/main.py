@@ -7,7 +7,7 @@ app = Flask(__name__)
 image_path = 'static/img/image_from_task7.jpg'
 image = Image.open('static/img/image_from_task7_copy.jpg')
 image.save('static/img/image_from_task7.jpg')
-K = False
+k = 'False'
 
 
 @app.route('/')
@@ -283,16 +283,20 @@ def results(nickname, level, rating):
 
 @app.route('/load_photo', methods=['POST', 'GET'])
 def show_photo():
-    global image_path, K
-    if request.method == 'GET' :
-        if K is True:
-            params = {'filename': image_path}
+    global image_path, k
+    if request.method == 'GET':
+        print(k)
+        if k == 'True':
+            params = {'filename': image_path, 'k': 'True'}
             return f'''{render_template('photo.html', **params)}'''
         else:
-            return f'''{render_template('photo.html')}'''
+            params = {'filename': image_path, 'k': k}
+            k = 'True'
+            return f'''{render_template('photo.html', **params)}'''
+
+
 
     elif request.method == 'POST':
-        K = True
         filename = request.form['file']
         pth = 'C:\\'
         for root, dirnames, filenames in os.walk(pth):
