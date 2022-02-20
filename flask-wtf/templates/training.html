@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if prof == "True" %}
+    <h2 text-align="center">Инженерные тренажеры</h2>
+    <img src="/static//img/it.jpg">
+{% else %}
+    <h2 text-align="center">Научные симуляторы</h2>
+    <img src="/static//img/nc.jpg">
+{% endif %}
+{% endblock %}
