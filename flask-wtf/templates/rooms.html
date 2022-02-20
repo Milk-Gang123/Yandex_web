@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 align="center">Оформление каюты</h1>
+<table align="center">
+    <tr>
+        <td>цвет стен</td>
+        <td>эмблема</td>
+    </tr>
+    <tr>
+        {% if gender == 'female' and age < 21 %}
+            <td bgcolor="ffc0cb" width="400px" height="50px"></td>
+            <td width="400px" height="500px"><img src="/static//img/alien2.png"></td>
+        {% elif gender == 'female' and age >= 21 %}
+            <td bgcolor="#f73228" width="400px" height="50px"></td>
+            <td width="400px" height="500px"><img src="/static//img/alien1.png"></td>
+        {% elif gender == 'male' and age < 21 %}
+            <td bgcolor="75c1ff" width="400px" height="50px"></td>
+            <td width="400px" height="500px"><img src="/static//img/alien2.png"></td>
+        {% elif gender == 'male' and age >= 21 %}
+            <td bgcolor="0057fa" width="400px" height="50px"></td>
+            <td width="400px" height="500px"><img src="/static//img/alien1.png"></td>
+        {% endif %}
+    </tr>
+</table>
+{% endblock %}

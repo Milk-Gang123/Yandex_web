@@ -68,5 +68,11 @@ def show_answer():
     return render_template('auto_answer.html', **params)
 
 
+@app.route('/table_param/<gender>/<int:age>')
+def show_rooms(gender, age):
+    params = {'gender': gender, 'age': age}
+    return render_template('rooms.html', **params)
+
+
 if __name__ == "__main__":
     app.run(port=8080, host="127.0.0.1")
