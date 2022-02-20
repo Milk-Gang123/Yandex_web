@@ -2,8 +2,8 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-FORM_DATA = {'surname': '', 'name': '', 'edu': '', 'prof': [],
-             'gender': '', 'motiv': '', 'ready': ''}
+FORM_DATA = {'surname': 'Watny', 'name': 'Mark', 'edu': 'Выше среднего', 'prof': 'штурман марсохода',
+             'gender': 'male', 'motiv': 'Всегда мечтал застрять на Марсе!', 'ready': 'True'}
 PROFESSIONS = ['инженер-исследователь', 'пилот', 'строитель', 'экзобиолог', 'врач',
                    'инженер по терраформированию', 'климатолог',
                    'специалист по радиационной защите', 'астрогеолог', 'гляциолог',
@@ -63,7 +63,8 @@ def show_form():
 @app.route('/auto_answer')
 def show_answer():
     params = FORM_DATA
-    params['prof'] = ', '.join(params['prof'])
+    if isinstance(params['prof'], list):
+        params['prof'] = ', '.join(params['prof'])
     return render_template('auto_answer.html', **params)
 
 
