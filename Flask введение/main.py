@@ -308,6 +308,11 @@ def show_photo():
                     return f'''Форма успешно отправлена. Перейдите на предыдущую страницу и обновите ее, чтобы увидеть фото'''
 
 
+@app.route('/carousel')
+def carousel():
+    return  render_template('gallery.html')
+
+
 
 if __name__ == "__main__":
     app.run(port=8080, host="127.0.0.1")

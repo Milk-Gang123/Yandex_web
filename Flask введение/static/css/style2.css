@@ -17,3 +17,13 @@ img {
     width: 480px;
     height: 400px;
 }
+.carousel {
+  margin-left: 20%;
+  margin-right: 30%;
+  width: 60%;
+}
+.carousel-item img {
+  width: 60%;
+  height: 50%; /* высота изображения */
+  object-fit: cover;
+}
