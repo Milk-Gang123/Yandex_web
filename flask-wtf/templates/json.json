@@ -1,0 +1,38 @@
+{
+    "1": {
+        "name": "Ридли",
+        "surname": "Скотт",
+        "link": "/static//img/astr1.png",
+        "jobs": "штурман, пилот"
+    },
+    "2": {
+        "name": "Энди",
+        "surname": "Уир",
+        "link": "/static//img/astr2.png",
+        "jobs": "астрогеолог, специалист по радиационной защите"
+    },
+    "3": {
+        "name": "Марк",
+        "surname": "Уотни",
+        "link": "/static//img/astr3.png",
+        "jobs": "строитель, киберинженер"
+    },
+    "4": {
+        "name": "Венката",
+        "surname": "Капур",
+        "link": "/static//img/astr4.png",
+        "jobs": "метеоролог, пилот дронов"
+    },
+    "5": {
+        "name": "Тедди",
+        "surname": "Сандерс",
+        "link": "/static//img/astr5.png",
+        "jobs": "климатолог, гляциолог"
+    },
+    "6": {
+        "name": "Шон",
+        "surname": "Бин",
+        "link": "/static//img/astr6.png",
+        "jobs": "врач, инженер жизнеобеспечения"
+    }
+}

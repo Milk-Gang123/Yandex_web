@@ -1,3 +1,6 @@
+import json
+import random
+
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -72,6 +75,16 @@ def show_answer():
 def show_rooms(gender, age):
     params = {'gender': gender, 'age': age}
     return render_template('rooms.html', **params)
+
+
+@app.route('/member')
+def show_member():
+    a = random.choice(["1", "2", "3", "4", "5", "6"])
+    with open('templates/json.json', 'r', encoding='utf-8') as file:
+        file = json.load(file)
+    params = file[a]
+    print(params)
+    return render_template('cards.html', **params)
 
 
 if __name__ == "__main__":
