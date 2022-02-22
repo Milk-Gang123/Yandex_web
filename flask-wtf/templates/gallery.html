@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <h1>Пейзажи Марса</h1>
+    <center><div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="static/img/pez1.png" class="d-block w-100" alt="...">
+            </div>
+          {% for i in img %}
+            <div class="carousel-item">
+              <img src="{{ i }}" class="d-block w-100" alt="...">
+            </div>
+          {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"  data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Предыдущий</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"  data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Следующий</span>
+      </button>
+    </div></center>
+    <form class="login_form" method="post">
+        <div class="form-group">
+            <label for="photo">Добавить картинку</label>
+            <input type="file" class="form-control-file" id="photo" name="file">
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</body>
+{% endblock %}

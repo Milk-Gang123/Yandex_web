@@ -1,6 +1,8 @@
 import json
+import os
 import random
 
+from PIL import Image
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -12,6 +14,8 @@ PROFESSIONS = ['инженер-исследователь', 'пилот', 'ст�
                    'специалист по радиационной защите', 'астрогеолог', 'гляциолог',
                    'инженер жизнеобеспечения', 'метеоролог', 'оператор марсохода', 'киберинженер',
                    'штурман', 'пилот дронов']
+NUM = 4
+IMAGES = {'img': ['static/img/pez2.png', 'static/img/pez3.png']}
 
 
 @app.route('/<title>')
@@ -85,6 +89,28 @@ def show_member():
     params = file[a]
     print(params)
     return render_template('cards.html', **params)
+
+
+@app.route('/galery', methods=['POST', 'GET'])
+def show_gallery():
+    global IMAGES, NUM
+    if request.method == 'GET':
+        params = IMAGES
+        print(IMAGES)
+        return render_template('gallery.html', **params)
+
+    elif request.method == 'POST':
+        filename = request.form['file']
+        pth = 'C:\\'
+        for root, dirnames, filenames in os.walk(pth):
+            for file in filenames:
+                if file == filename:
+                    path = os.path.join(root, file)
+        image = Image.open(path)
+        image.save(f'static/img/pez{NUM}.jpg')
+        IMAGES['img'].append(f'static/img/pez{NUM}.jpg')
+        NUM += 1
+        return "Картинка отправлена"
 
 
 if __name__ == "__main__":
