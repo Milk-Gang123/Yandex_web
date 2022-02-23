@@ -2,6 +2,8 @@ import json
 import os
 import random
 
+from pathlib import Path
+
 from PIL import Image
 from flask import Flask, render_template, request
 
@@ -101,11 +103,7 @@ def show_gallery():
 
     elif request.method == 'POST':
         filename = request.form['file']
-        pth = 'C:\\'
-        for root, dirnames, filenames in os.walk(pth):
-            for file in filenames:
-                if file == filename:
-                    path = os.path.join(root, file)
+        path = next(Path('C:\\').rglob('image2.jpg'))
         image = Image.open(path)
         image.save(f'static/img/pez{NUM}.jpg')
         IMAGES['img'].append(f'static/img/pez{NUM}.jpg')
