@@ -3,21 +3,25 @@
 {% block content %}
 <h2 align="center">Works log</h2>
 {% for i in jobs %}
-    <h3>Action #{{ id }}</h3>
+    <h3>Action #{{ i[0] }}</h3>
 <table>
-    <tr bgcolor="gray">
-        <td>Title of activity</td>
-        <td>Team leader</td>
-        <td>Duration</td>
-        <td>List of collaborators</td>
-        <td>Is finished</td>
+    <tr>
+        <td bgcolor="#A8A8A8">Title of activity</td>
+        <td bgcolor="#A8A8A8">Team leader</td>
+        <td bgcolor="#A8A8A8">Duration</td>
+        <td bgcolor="#A8A8A8">List of collaborators</td>
+        <td bgcolor="#A8A8A8">Is finished</td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td bgcolor="42aaff">{{i[1]}}</td>
+        <td bgcolor="42aaff">{{i[2]}}</td>
+        <td bgcolor="42aaff">{{i[3]}}</td>
+        <td bgcolor="42aaff">{{i[4]}}</td>
+        {% if i[5] %}
+            <td bgcolor="green">Is finished</td>
+        {% else %}
+            <td bgcolor="pink">Is not finished</td>
+        {% endif %}
     </tr>
 </table>
 {% endfor %}

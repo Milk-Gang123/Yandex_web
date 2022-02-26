@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 align="center">Register Form</h1>
+    <h3 align="center">На участие в миссии</h3>
+    <div>
+        <form class="login_form" method="post">
+            <p>Login/Email</p>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+            <p>Password</p>
+            <input type="password" class="form-control" id="password1"  name="password1">
+            <p>Repeat password</p>
+            <input type="password" class="form-control" id="password2"  name="password2">
+            <p>Surname</p>
+            <input type="surname" class="form-control" id="surname" name="surname">
+            <p>Name</p>
+            <input type="name" class="form-control" id="name" name="name">
+            <p>Age</p>
+            <input type="number" class="form-control" id="age" name="age">
+            <p>Position</p>
+            <input type="text" class="form-control" id="position" name="position">
+            <p>Speciality</p>
+            <input type="text" class="form-control" id="speciality" name="speciality">
+            <p>Address</p>
+            <input type="text" class="form-control" id="address" name="address">
+            <br>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+    </div>
+{% endblock %}
