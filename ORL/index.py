@@ -6,8 +6,12 @@ from data.users import User
 from data.db_session import SqlAlchemyBase, global_init, create_session
 from data.jobs import Jobs
 
+#from flask_login import LoginManager
+
 
 app = Flask(__name__)
+#login_manager = LoginManager()
+#login_manager.init_app(app)
 
 
 @app.route('/')
