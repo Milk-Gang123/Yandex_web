@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 from flask_login import login_user
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
-
 from ORL.forms.user import LoginForm, RegisterForm
 from data import db_session
 from data.users import User
