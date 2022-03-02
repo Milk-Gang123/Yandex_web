@@ -62,11 +62,18 @@ def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+
 
 @app.route('/login',  methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
+        print('1')
         global_init('db/blogs.db')
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()

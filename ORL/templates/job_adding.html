@@ -42,7 +42,7 @@
     </p>
     <p>
         {{ form.is_finished.label }}<br>
-        {{ form.is_finished(class="form-control") }}<br>
+        {{ form.is_finished() }}<br>
         {% for error in form.is_finished.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
