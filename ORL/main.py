@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request
 from flask_login import login_user
 from werkzeug.security import generate_password_hash
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect
 from ORL.forms.user import LoginForm, RegisterForm
-from data import db_session
-from data.users import User
-from data.db_session import SqlAlchemyBase, global_init, create_session
-from data.jobs import Jobs
+from ORL.forms.job import AddingForm
+from ORL.data import db_session
+from ORL.data.users import User
+from ORL.data.db_session import SqlAlchemyBase, global_init, create_session
+from ORL.data.jobs import Jobs
 
 from flask_login import LoginManager
 
@@ -73,6 +75,27 @@ def login():
             return redirect("/")
         return  render_template('login.html', message="Неправильный логин или пароль", form=form)
     return render_template("login.html", title="Авторизация", form=form)
+
+
+@app.route('/addjob',  methods=['GET', 'POST'])
+@login_required
+def add_job():
+    form = AddingForm()
+    if form.validate_on_submit():
+        global_init('db/blogs.db')
+        try:
+            db_sess = db_session.create_session()
+            job = Jobs(team_leader=form.team_leader.data,
+                       job=form.job.data,
+                       work_size=form.work_size.data,
+                       collaborators=form.collaborators.data,
+                       is_finished=form.is_finished.data)
+            db_sess.add(job)
+            db_sess.commit()
+            return redirect("/")
+        except Exception:
+            return  render_template('job_adding.html', message="Введены неверные данные", form=form)
+    return render_template("job_adding.html", title="Авторизация", form=form)
 
 
 
