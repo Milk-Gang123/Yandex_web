@@ -149,6 +149,20 @@ def edit_news(id):
                            form=form
                            )
 
+
+@app.route('/delete-job/<int:id>', methods=['GET', 'POST'])
+@login_required
+def news_delete(id):
+    db_sess = db_session.create_session()
+    job = db_sess.query(Jobs).filter(Jobs.id == id, (Jobs.team_leader == current_user.id) | (current_user.id == 1)).first()
+    if job:
+        db_sess.delete(job)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
 if __name__ == "__main__":
     db_session.global_init("db/blogs.db")
     a = db_session.__factory
