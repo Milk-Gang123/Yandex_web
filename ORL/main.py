@@ -9,6 +9,7 @@ from ORL.data import db_session
 from ORL.data.users import User
 from ORL.data.db_session import SqlAlchemyBase, global_init, create_session
 from ORL.data.jobs import Jobs
+from data import jobs_api
 
 from flask_login import LoginManager
 
@@ -148,8 +149,8 @@ def edit_news(id):
                            form=form
                            )
 
-
-
-
 if __name__ == "__main__":
-    app.run(port=8080, host="127.0.0.1")
+    db_session.global_init("db/blogs.db")
+    a = db_session.__factory
+    app.register_blueprint(jobs_api.blueprint)
+    app.run(port=8080, host='127.0.0.1')
