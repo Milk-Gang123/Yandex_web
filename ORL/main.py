@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, abort
 from flask_login import login_user
 from werkzeug.security import generate_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -59,6 +59,7 @@ def reqister():
 
 @login_manager.user_loader
 def load_user(user_id):
+    global_init('db/blogs.db')
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
@@ -103,6 +104,49 @@ def add_job():
         except Exception:
             return  render_template('job_adding.html', message="Введены неверные данные", form=form)
     return render_template("job_adding.html", title="Авторизация", form=form)
+
+
+@app.route('/edit-job/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_news(id):
+    form = AddingForm()
+    # Если мы запросили страницу записи,
+    if request.method == "GET":
+        # ищем ее в базе по id, причем автор новости должен совпадать с текущим пользователем.
+        db_sess = db_session.create_session()
+        job = db_sess.query(Jobs).filter(Jobs.id == id,
+                                         (Jobs.team_leader == current_user.id) | (current_user.id == 1)
+                                          ).first()
+        if job:
+            # Если что-то нашли, предзаполняем форму:
+            form.team_leader.data = job.team_leader
+            form.job.data = job.job
+            form.collaborators.data = job.collaborators
+            form.work_size.data = job.work_size
+            form.is_finished.data = job.is_finished
+        else:
+            # иначе показываем пользователю страницу 404:
+            abort(404)
+    # Такую же проверку на всякий случай делаем перед изменением новости.
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        job = db_sess.query(Jobs).filter(Jobs.id == id,
+                                         (Jobs.team_leader == current_user.id) | (current_user.id == 1)
+                                         ).first()
+        if job:
+            job.team_leader = form.team_leader.data
+            job.job = form.job.data
+            job.collaborators = form.collaborators.data
+            job.work_size = form.work_size.data
+            job.is_finished = form.is_finished.data
+            db_sess.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('job_adding.html',
+                           title='Редактирование новости',
+                           form=form
+                           )
 
 
 
