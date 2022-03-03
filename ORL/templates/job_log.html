@@ -4,25 +4,31 @@
 <h2 align="center">Works log</h2>
 {% for i in jobs %}
     <h3>Action #{{ i[0] }}</h3>
-<table>
-    <tr>
-        <td bgcolor="cfcfcf">Title of activity</td>
-        <td bgcolor="cfcfcf">Team leader</td>
-        <td bgcolor="cfcfcf">Duration</td>
-        <td bgcolor="cfcfcf">List of collaborators</td>
-        <td bgcolor="cfcfcf">Is finished</td>
-    </tr>
-    <tr>
-        <td height="80px" bgcolor="a8d8ff">{{i[1]}}</td>
-        <td height="80px" bgcolor="a8d8ff">{{i[2]}}</td>
-        <td height="80px" bgcolor="a8d8ff">{{i[3]}}</td>
-        <td height="80px" bgcolor="a8d8ff">{{i[4]}}</td>
-        {% if i[5] %}
-            <td height="80px" bgcolor="b3ffb3">Is finished</td>
-        {% else %}
-            <td height="80px" bgcolor="ffc0cb">Is not finished</td>
+    <table>
+        <tr>
+            <td bgcolor="cfcfcf">Title of activity</td>
+            <td bgcolor="cfcfcf">Team leader</td>
+            <td bgcolor="cfcfcf">Duration</td>
+            <td bgcolor="cfcfcf">List of collaborators</td>
+            <td bgcolor="cfcfcf">Is finished</td>
+        </tr>
+        <tr>
+            <td height="80px" bgcolor="a8d8ff">{{i[1]}}</td>
+            <td height="80px" bgcolor="a8d8ff">{{i[2]}}</td>
+            <td height="80px" bgcolor="a8d8ff">{{i[3]}}</td>
+            <td height="80px" bgcolor="a8d8ff">{{i[4]}}</td>
+            {% if i[5] %}
+                <td height="80px" bgcolor="b3ffb3">Is finished</td>
+            {% else %}
+                <td height="80px" bgcolor="ffc0cb">Is not finished</td>
+            {% endif %}
+        </tr>
+        {% if current_user.is_authenticated and (current_user.id == i[6] or current_user.id == 1) %}
+            <div>
+                <a href="/edit-job/{{ i[0] }}" class="btn btn-warning">Изменить</a>
+                <a href="/delete-job/{{ i[0] }}" class="btn btn-danger">Удалить</a>
+            </div>
         {% endif %}
-    </tr>
-</table>
+    </table>
 {% endfor %}
 {% endblock %}

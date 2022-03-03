@@ -30,7 +30,7 @@ def show_answer():
         sess = create_session()
         user = sess.query(User).filter(User.id == job.team_leader).first()
         team_lead = f'{user.name}'
-        params[f'jobs'].append([job.id, job.job, team_lead, f'{job.work_size} hours', job.collaborators, job.is_finished])
+        params[f'jobs'].append([job.id, job.job, team_lead, f'{job.work_size} hours', job.collaborators, job.is_finished, user.id])
     return render_template('job_log.html', **params)
 
 
@@ -111,24 +111,19 @@ def add_job():
 @login_required
 def edit_news(id):
     form = AddingForm()
-    # Если мы запросили страницу записи,
     if request.method == "GET":
-        # ищем ее в базе по id, причем автор новости должен совпадать с текущим пользователем.
         db_sess = db_session.create_session()
         job = db_sess.query(Jobs).filter(Jobs.id == id,
                                          (Jobs.team_leader == current_user.id) | (current_user.id == 1)
                                           ).first()
         if job:
-            # Если что-то нашли, предзаполняем форму:
             form.team_leader.data = job.team_leader
             form.job.data = job.job
             form.collaborators.data = job.collaborators
             form.work_size.data = job.work_size
             form.is_finished.data = job.is_finished
         else:
-            # иначе показываем пользователю страницу 404:
             abort(404)
-    # Такую же проверку на всякий случай делаем перед изменением новости.
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         job = db_sess.query(Jobs).filter(Jobs.id == id,
