@@ -17,7 +17,7 @@ def get_news():
     news = db_sess.query(Jobs).all()
     return jsonify(
         {
-            "news": [item.to_dict(only=("team_leader", "job", "work_size", "collaborators", "is_finished", "start_date", "end_date")) for item in news]
+            "news": [item.to_dict() for item in news]
         }
     )
 
