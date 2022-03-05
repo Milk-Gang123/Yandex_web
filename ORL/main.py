@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, make_response, jsonify
 from flask_login import login_user
 from werkzeug.security import generate_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -158,8 +158,13 @@ def news_delete(id):
     return redirect('/')
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({"error": "Not found"}), 404)
+
+
+
 if __name__ == "__main__":
     db_session.global_init("db/blogs.db")
-    a = db_session.__factory
     app.register_blueprint(jobs_api.blueprint)
     app.run(port=8080, host='127.0.0.1')
