@@ -1,7 +1,10 @@
+import datetime
+
 import flask
 from flask import request, jsonify
 from ORL.data import db_session
 from ORL.data.jobs import Jobs
+from ORL.data.users import User
 
 
 blueprint = flask.Blueprint(
@@ -93,5 +96,90 @@ def edit_jobs(jobs_id):
         job.is_finished = request.json['start_date']
     if 'end_date' in request.json:
         job.is_finished = request.json['end_date']
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
+
+
+
+
+
+@blueprint.route("/api/users")
+def get_users():
+    db_sess = db_session.create_session()
+    users = db_sess.query(User).all()
+    return jsonify(
+        {
+            "users": [item.to_dict() for item in users]
+        }
+    )
+
+
+@blueprint.route("/api/users/<int:user_id>", methods=['GET'])
+def get_users_1(user_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(User).get(user_id)
+    if not news:
+        return jsonify({"error": "Not found"})
+    return jsonify(
+        {
+            "news": news.to_dict()
+        }
+    )
+
+@blueprint.route('/api/users', methods=['POST'])
+def create_user():
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    elif not all(key in request.json for key in
+                 ['name', 'about', 'email', 'hashed_password', 'is_finished']):
+        return jsonify({'error': 'Bad request'})
+    db_sess = db_session.create_session()
+    try:
+        user = db_sess.query(User).filter(User.id == request.json['id']).first()
+        if user:
+            return jsonify({'error': 'Id already exists'})
+    except Exception:
+        pass
+    user = Jobs(
+        name=request.json['name'],
+        about=request.json['about'],
+        email=request.json['email'],
+        hashed_password=request.json['hashed_password'],
+        create_date=datetime.datetime.now()
+    )
+    db_sess.add(user)
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
+
+
+@blueprint.route('/api/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(user_id)
+    if not user:
+        return jsonify({'error': 'Not found'})
+    db_sess.delete(user)
+    db_sess.commit()
+    return jsonify({'success': 'OK'})
+
+
+@blueprint.route('/api/users/<int:user_id>', methods=['PUT'])
+def edit_user(user_id):
+    if not request.json:
+        return jsonify({'error': 'Empty request'})
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).get(user_id)
+    if not user:
+        return jsonify({'error': 'Not found'})
+    if 'name' in request.json:
+        user.team_leader=request.json['name']
+    if 'about' in request.json:
+        user.work_size=request.json['about']
+    if 'email' in request.json:
+        user.job=request.json['email']
+    if 'hashed_password' in request.json:
+        user.collaborators=request.json['hashed_password']
+    if 'create_date' in request.json:
+        user.is_finished = request.json['create_date']
     db_sess.commit()
     return jsonify({'success': 'OK'})

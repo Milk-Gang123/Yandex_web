@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, render_template, request, abort, make_response, jsonify
 from flask_login import login_user
 from werkzeug.security import generate_password_hash
@@ -10,6 +11,7 @@ from ORL.data.users import User
 from ORL.data.db_session import SqlAlchemyBase, global_init, create_session
 from ORL.data.jobs import Jobs
 from data import jobs_api
+from data import user_api
 
 from flask_login import LoginManager
 
@@ -75,7 +77,6 @@ def logout():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        print('1')
         global_init('db/blogs.db')
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
@@ -158,6 +159,22 @@ def news_delete(id):
     return redirect('/')
 
 
+@app.route('/users_show/<int:user_id>')
+def show_user(user_id):
+    try:
+        response = requests.get(f'http://127.0.0.1:8080/api/users_show/{user_id}')
+        print(response)
+        if response == 'Error':
+            abort(404)
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).get(user_id)
+        params = {'name': user.name, 'address': user.city_from}
+        return render_template('user_show.html', **params)
+    except Exception as e:
+        print(e)
+        return 'aaa'
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({"error": "Not found"}), 404)
@@ -166,5 +183,5 @@ def not_found(error):
 
 if __name__ == "__main__":
     db_session.global_init("db/blogs.db")
-    app.register_blueprint(jobs_api.blueprint)
+    app.register_blueprint(user_api.blueprint)
     app.run(port=8080, host='127.0.0.1')
