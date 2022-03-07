@@ -6,12 +6,15 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.utils import redirect
 from ORL.forms.user import LoginForm, RegisterForm
 from ORL.forms.job import AddingForm
+from ORL.forms.dep import DepForm
 from ORL.data import db_session
 from ORL.data.users import User
 from ORL.data.db_session import SqlAlchemyBase, global_init, create_session
 from ORL.data.jobs import Jobs
 from data import jobs_api
 from data import user_api
+from data.departament import Departament
+
 
 from flask_login import LoginManager
 
@@ -24,7 +27,7 @@ login_manager.init_app(app)
 
 @app.route('/')
 @app.route('/index')
-def show_answer():
+def show_jobs():
     params = {'jobs': []}
     global_init('db/blogs.db')
     db_sess = create_session()
@@ -34,6 +37,39 @@ def show_answer():
         team_lead = f'{user.name}'
         params[f'jobs'].append([job.id, job.job, team_lead, f'{job.work_size} hours', job.collaborators, job.is_finished, user.id])
     return render_template('job_log.html', **params)
+
+
+@app.route('/dep_log')
+def show_deps():
+    params = {'deps': []}
+    global_init('db/blogs.db')
+    db_sess = create_session()
+    for dep in db_sess.query(Departament).all():
+        sess = create_session()
+        user = sess.query(User).filter(User.id == dep.chief_id).first()
+        team_lead = f'{user.name}'
+        params[f'deps'].append([dep.id, dep.title, team_lead, dep.members, dep.email, user.id])
+    return render_template('dep_log.html', **params)
+
+
+@app.route('/dep_adding', methods=['GET', 'POST'])
+def add_deps():
+    form = DepForm()
+    if form.validate_on_submit():
+        global_init('db/blogs.db')
+        try:
+            db_sess = db_session.create_session()
+            dep = Departament(title=form.title.data,
+                              chief_id=form.chief_id.data,
+                              members=form.members.data,
+                              email=form.email.data)
+            db_sess.add(dep)
+            db_sess.commit()
+            return redirect("/dep_log")
+        except Exception as e:
+            print(e)
+            return render_template('dep_adding.html', message="Введены неверные данные", form=form)
+    return render_template("dep_adding.html",  form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
