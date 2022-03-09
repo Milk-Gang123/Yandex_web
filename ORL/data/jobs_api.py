@@ -2,9 +2,9 @@ import datetime
 
 import flask
 from flask import request, jsonify
-from ORL.data import db_session
-from ORL.data.jobs import Jobs
-from ORL.data.users import User
+import db_session
+from jobs import Jobs
+from users import User
 
 
 blueprint = flask.Blueprint(

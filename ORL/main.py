@@ -4,13 +4,13 @@ from flask_login import login_user
 from werkzeug.security import generate_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect
-from ORL.forms.user import LoginForm, RegisterForm
-from ORL.forms.job import AddingForm
-from ORL.forms.dep import DepForm
-from ORL.data import db_session
-from ORL.data.users import User
-from ORL.data.db_session import SqlAlchemyBase, global_init, create_session
-from ORL.data.jobs import Jobs
+from forms.user import LoginForm, RegisterForm
+from forms.job import AddingForm
+from forms.dep import DepForm
+from data import db_session
+from data.users import User
+from data.db_session import SqlAlchemyBase, global_init, create_session
+from data.jobs import Jobs
 from data import jobs_api
 from data import user_api
 from data.departament import Departament
