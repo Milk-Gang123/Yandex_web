@@ -1,8 +1,8 @@
 import flask
 import requests
 from flask import request, jsonify
-import db_session
-from users import User
+from ORL.data import db_session
+from ORL.data.users import User
 
 
 blueprint = flask.Blueprint(

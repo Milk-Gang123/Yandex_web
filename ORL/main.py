@@ -7,13 +7,13 @@ from werkzeug.utils import redirect
 from forms.user import LoginForm, RegisterForm
 from forms.job import AddingForm
 from forms.dep import DepForm
-from data import db_session
-from data.users import User
-from data.db_session import SqlAlchemyBase, global_init, create_session
-from data.jobs import Jobs
-from data import jobs_api
-from data import user_api
-from data.departament import Departament
+from ORL.data import db_session
+from ORL.data.users import User
+from ORL.data.db_session import SqlAlchemyBase, global_init, create_session
+from ORL.data.jobs import Jobs
+from ORL.data import jobs_api
+from ORL.data import user_api
+from ORL.data.departament import Departament
 
 
 from flask_login import LoginManager
