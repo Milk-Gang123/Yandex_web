@@ -12,8 +12,8 @@ table {
   margin: 50px auto;
 }
 td {
-    width: 160px;
     text-align: center;
+    min-width: 200px;
 }
 a {
     align: right;

@@ -1,15 +1,20 @@
-from flask import Flask, render_template, request, abort
+import requests
+from flask import Flask, render_template, request, abort, make_response, jsonify
 from flask_login import login_user
 from werkzeug.security import generate_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect
-from ORL.forms.user import LoginForm, RegisterForm
-from ORL.forms.job import AddingForm
+from forms.user import LoginForm, RegisterForm
+from forms.job import AddingForm
+from forms.dep import DepForm
 from ORL.data import db_session
 from ORL.data.users import User
 from ORL.data.db_session import SqlAlchemyBase, global_init, create_session
 from ORL.data.jobs import Jobs
-from data import jobs_api
+from ORL.data import jobs_api
+from ORL.data import user_api
+from ORL.data.departament import Departament
+
 
 from flask_login import LoginManager
 
@@ -22,7 +27,7 @@ login_manager.init_app(app)
 
 @app.route('/')
 @app.route('/index')
-def show_answer():
+def show_jobs():
     params = {'jobs': []}
     global_init('db/blogs.db')
     db_sess = create_session()
@@ -30,8 +35,41 @@ def show_answer():
         sess = create_session()
         user = sess.query(User).filter(User.id == job.team_leader).first()
         team_lead = f'{user.name}'
-        params[f'jobs'].append([job.id, job.job, team_lead, f'{job.work_size} hours', job.collaborators, job.is_finished])
+        params[f'jobs'].append([job.id, job.job, team_lead, f'{job.work_size} hours', job.collaborators, job.is_finished, user.id])
     return render_template('job_log.html', **params)
+
+
+@app.route('/dep_log')
+def show_deps():
+    params = {'deps': []}
+    global_init('db/blogs.db')
+    db_sess = create_session()
+    for dep in db_sess.query(Departament).all():
+        sess = create_session()
+        user = sess.query(User).filter(User.id == dep.chief_id).first()
+        team_lead = f'{user.name}'
+        params[f'deps'].append([dep.id, dep.title, team_lead, dep.members, dep.email, user.id])
+    return render_template('dep_log.html', **params)
+
+
+@app.route('/dep_adding', methods=['GET', 'POST'])
+def add_deps():
+    form = DepForm()
+    if form.validate_on_submit():
+        global_init('db/blogs.db')
+        try:
+            db_sess = db_session.create_session()
+            dep = Departament(title=form.title.data,
+                              chief_id=form.chief_id.data,
+                              members=form.members.data,
+                              email=form.email.data)
+            db_sess.add(dep)
+            db_sess.commit()
+            return redirect("/dep_log")
+        except Exception as e:
+            print(e)
+            return render_template('dep_adding.html', message="Введены неверные данные", form=form)
+    return render_template("dep_adding.html",  form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -75,7 +113,6 @@ def logout():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        print('1')
         global_init('db/blogs.db')
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
@@ -111,24 +148,19 @@ def add_job():
 @login_required
 def edit_news(id):
     form = AddingForm()
-    # Если мы запросили страницу записи,
     if request.method == "GET":
-        # ищем ее в базе по id, причем автор новости должен совпадать с текущим пользователем.
         db_sess = db_session.create_session()
         job = db_sess.query(Jobs).filter(Jobs.id == id,
                                          (Jobs.team_leader == current_user.id) | (current_user.id == 1)
                                           ).first()
         if job:
-            # Если что-то нашли, предзаполняем форму:
             form.team_leader.data = job.team_leader
             form.job.data = job.job
             form.collaborators.data = job.collaborators
             form.work_size.data = job.work_size
             form.is_finished.data = job.is_finished
         else:
-            # иначе показываем пользователю страницу 404:
             abort(404)
-    # Такую же проверку на всякий случай делаем перед изменением новости.
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         job = db_sess.query(Jobs).filter(Jobs.id == id,
@@ -149,8 +181,43 @@ def edit_news(id):
                            form=form
                            )
 
+
+@app.route('/delete-job/<int:id>', methods=['GET', 'POST'])
+@login_required
+def news_delete(id):
+    db_sess = db_session.create_session()
+    job = db_sess.query(Jobs).filter(Jobs.id == id, (Jobs.team_leader == current_user.id) | (current_user.id == 1)).first()
+    if job:
+        db_sess.delete(job)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
+@app.route('/users_show/<int:user_id>')
+def show_user(user_id):
+    try:
+        response = requests.get(f'http://127.0.0.1:8080/api/users_show/{user_id}')
+        print(response)
+        if response == 'Error':
+            abort(404)
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).get(user_id)
+        params = {'name': user.name, 'address': user.city_from}
+        return render_template('user_show.html', **params)
+    except Exception as e:
+        print(e)
+        return 'aaa'
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({"error": "Not found"}), 404)
+
+
+
 if __name__ == "__main__":
     db_session.global_init("db/blogs.db")
-    a = db_session.__factory
-    app.register_blueprint(jobs_api.blueprint)
+    app.register_blueprint(user_api.blueprint)
     app.run(port=8080, host='127.0.0.1')
