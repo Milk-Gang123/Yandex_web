@@ -1,19 +1,21 @@
 import requests
 from flask import Flask, render_template, request, abort, make_response, jsonify
 from flask_login import login_user
+from flask_restful import Api
 from werkzeug.security import generate_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect
 from forms.user import LoginForm, RegisterForm
 from forms.job import AddingForm
 from forms.dep import DepForm
-from ORL.data import db_session
-from ORL.data.users import User
-from ORL.data.db_session import SqlAlchemyBase, global_init, create_session
-from ORL.data.jobs import Jobs
-from ORL.data import jobs_api
-from ORL.data import user_api
-from ORL.data.departament import Departament
+from data import db_session
+from data.users import User
+from data.db_session import SqlAlchemyBase, global_init, create_session
+from data.jobs import Jobs
+from data import jobs_api
+from data import user_api
+from data.departament import Departament
+from data import users_resources
 
 
 from flask_login import LoginManager
@@ -21,6 +23,7 @@ from flask_login import LoginManager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+api = Api(app, catch_all_404s=True)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -219,5 +222,7 @@ def not_found(error):
 
 if __name__ == "__main__":
     db_session.global_init("db/blogs.db")
+    api.add_resource(users_resources.UsersListResource, '/api/v2/users')
+    api.add_resource(users_resources.UsersResource, '/api/v2/users/<int:user_id>')
     app.register_blueprint(user_api.blueprint)
     app.run(port=8080, host='127.0.0.1')
