@@ -16,6 +16,7 @@ from data import jobs_api
 from data import user_api
 from data.departament import Departament
 from data import users_resources
+from data import jobs_resources
 
 
 from flask_login import LoginManager
@@ -224,5 +225,7 @@ if __name__ == "__main__":
     db_session.global_init("db/blogs.db")
     api.add_resource(users_resources.UsersListResource, '/api/v2/users')
     api.add_resource(users_resources.UsersResource, '/api/v2/users/<int:user_id>')
+    api.add_resource(jobs_resources.JobsListResource, '/api/v2/jobs')
+    api.add_resource(jobs_resources.JobsResource, '/api/v2/jobs/<int:jobs_id>')
     app.register_blueprint(user_api.blueprint)
     app.run(port=8080, host='127.0.0.1')

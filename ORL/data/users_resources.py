@@ -5,12 +5,12 @@ from .reqparse import parser
 from .users import User
 
 
-def abort_if_news_not_found(news_id):
+def abort_if_news_not_found(user_id):
     db_session.global_init("db/blogs.db")
     session = db_session.create_session()
-    user = session.query(User).get(news_id)
+    user = session.query(User).get(user_id)
     if not user:
-        abort(404, message=f"User {news_id} not found")
+        abort(404, message=f"User {user_id} not found")
 
 
 class UsersResource(Resource):
