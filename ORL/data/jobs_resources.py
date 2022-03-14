@@ -53,7 +53,6 @@ class JobsListResource(Resource):
                     work_size=args['work_size'],
                     collaborators=args['collaborators'],
                     is_finished=is_fin)
-        print(jobs)
         session.add(jobs)
         session.commit()
         return jsonify({'success': 'OK'})
