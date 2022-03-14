@@ -43,11 +43,17 @@ class JobsListResource(Resource):
     def post(self):
         args = parser.parse_args()
         session = db_session.create_session()
+        is_fin = ''
+        if args['is_finished'] == 'True':
+            is_fin = True
+        else:
+            is_fin = False
         jobs = Jobs(team_leader=args['team_leader'],
                     job=args['job'],
                     work_size=args['work_size'],
                     collaborators=args['collaborators'],
-                    is_finished=args['is_finished'])
+                    is_finished=is_fin)
+        print(jobs)
         session.add(jobs)
         session.commit()
         return jsonify({'success': 'OK'})
