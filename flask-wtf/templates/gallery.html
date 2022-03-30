@@ -24,10 +24,10 @@
         <span class="visually-hidden">Следующий</span>
       </button>
     </div></center>
-    <form class="login_form" method="post">
+    <form class="login_form" method="post" enctype="multipart/form-data" novalidate>
         <div class="form-group">
-            <label for="photo">Добавить картинку</label>
-            <input type="file" class="form-control-file" id="photo" name="file">
+            <label for="input__file">Добавить картинку</label>
+            <input type="file" name="pw" id="input__file" multiple>
         </div>
         <button type="submit" class="btn btn-primary">Отправить</button>
     </form>

@@ -102,11 +102,9 @@ def show_gallery():
         return render_template('gallery.html', **params)
 
     elif request.method == 'POST':
-        filename = request.form['file']
-        path = next(Path('C:\\').rglob('image2.jpg'))
-        image = Image.open(path)
-        image.save(f'static/img/pez{NUM}.jpg')
-        IMAGES['img'].append(f'static/img/pez{NUM}.jpg')
+        file = request.files['pw']
+        file.save(f'static/img/pez{NUM}.png')
+        IMAGES['img'].append(f'static/img/pez{NUM}.png')
         NUM += 1
         return "Картинка отправлена"
 
